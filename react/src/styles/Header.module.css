@@ -1,0 +1,45 @@
+header {
+  background-color: #344e41;
+  height: 10vh;
+  border-top: 1px solid transparent !important;
+  margin-top: -1px !important;
+}
+
+nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 0 3em;
+}
+
+ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2em;
+}
+
+li {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+}
+
+.logo {
+  color: white;
+  font-size: 3em;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+h4 {
+  padding-left: 0.3em;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+}
+
+h5 {
+  margin-bottom: 0;
+  font-family: "Quicksand", sans-serif;
+}
