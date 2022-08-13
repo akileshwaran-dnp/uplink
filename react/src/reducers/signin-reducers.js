@@ -21,7 +21,7 @@ export const signInReducer = (state = initialState, action) => {
   }
 
   if (action.type === "PASS_CHANGE") {
-    let pv = state.isUsernameValid && action.payload.length > 4;
+    let pv = state.isUsernameValid && action.payload.length >= 4;
     return {
       username: state.username,
       password: action.payload,

@@ -1,8 +1,9 @@
 from distutils.command.upload import upload
+from urllib.error import HTTPError
 from rest_framework.views import APIView
 from rest_framework import viewsets
-from . serializer import *
-from . models import *
+from ..serializer import *
+from ..models import *
 from rest_framework.response import Response
 from django.http import HttpResponse
 
@@ -10,26 +11,8 @@ import os
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
-from rest_framework.decorators import action
 from django.db.models import Count
 from django.core.files import File
-
-
-class SigInViews(APIView):
-    def get(self, request):
-        uname = request.query_params['username']
-        pcode = request.query_params['password']
-        validity = "invalid username"
-        for user in Users.objects.all():
-            if user.username == uname:
-                if user.password == pcode:
-                    validity = "valid"
-                else:
-                    validity == "incorrect password"
-                break
-
-        res = {"username": uname, "validity": validity}
-        return Response(res)
 
 
 class SignUpViews(APIView):
@@ -53,8 +36,7 @@ class SignUpViews(APIView):
 
 
 class DocsViews (viewsets.ViewSet):
-    @action(methods='get', detail=True)
-    def get_history(self, request):
+    def history(self, request):
         username = request.query_params['username']
         user_files_data = Docs.objects.filter(
             username=username).values('uploadDT', 'filename', 'filetype', 'fileUploadID')
@@ -65,20 +47,23 @@ class DocsViews (viewsets.ViewSet):
             user_history.append(user_file)
         return Response(user_history)
 
-    def get_file(self, request):
+    def save_doc(self, request):
         fileUpID = request.query_params['fileUploadID']
-        fileData = Docs.objects.values(
-            'fileurl', 'filename', 'filetype').filter(fileUploadID=fileUpID)
-        fileurl = fileData[0]['fileurl']
-        filename = fileData[0]['filename'] + "." + fileData[0]['filetype']
-        f = open(fileurl, 'rb')
-        docFile = File(f)
-        response = HttpResponse(docFile.read())
-        response['Content-Disposition'] = f'filename= {filename}'
-        return response
 
-    @action(methods='post', detail=True)
-    def post_file(self, request):
+        try:
+            fileData = Docs.objects.values(
+                'fileurl', 'filename', 'filetype').filter(fileUploadID=fileUpID)
+            fileurl = fileData[0]['fileurl']
+            filename = fileData[0]['filename'] + "." + fileData[0]['filetype']
+            f = open(fileurl, 'rb')
+            docFile = File(f)
+            response = HttpResponse(docFile.read())
+            response['Content-Disposition'] = f'filename= {filename}'
+            return response
+        except:
+            return Response('failure')
+
+    def document(self, request):
         data = request.FILES['uploadedFiles']
 
         username = request.data['username']
@@ -101,12 +86,15 @@ class DocsViews (viewsets.ViewSet):
             path_to_save = default_storage.save(
                 fileurl, ContentFile(data.read()))
             os.path.join(settings.MEDIA_ROOT, path_to_save)
-            return Response(serializer.data)
+            res = {
+                "isUploaded": "yes",
+                "uploadDT": upload_dt
+            }
+            return Response(res)
         return Response("failure")
 
 
 class StatisticsView (viewsets.ViewSet):
-    @action(detail=True, methods=['get'])
     def get_total_stats(self, request):
         res = {"total": Docs.objects.count()}
         return Response(res)

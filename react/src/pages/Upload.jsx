@@ -3,7 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-const Home = () => {
+const Upload = () => {
   const username = useSelector((state) => state.user.username);
 
   const [docs, setDocs] = useState(null);
@@ -52,7 +52,13 @@ const Home = () => {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
-    console.log(response);
+    const data = await response.data;
+
+    if (data == "UPLOAD_FAILURE") {
+      alert("upload failure");
+    } else {
+      alert("File Uploaded Successfully at " + data);
+    }
   };
 
   return (
@@ -65,4 +71,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Upload;

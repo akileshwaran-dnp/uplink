@@ -4,16 +4,19 @@ import React, { useEffect } from "react";
 
 import SignIn from "./pages/SignIn";
 
-import Home from "./pages/Home";
 import PortalDetails from "./pages/PortalDetails";
 import Header from "./ui/Header";
 import History from "./pages/History";
-import Error from "./pages/Error";
+import Error from "./ui/Error";
+import Loading from "./ui/Loading";
 
 import { userActions } from "./store/user-slice";
+import Upload from "./pages/Upload";
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.user.isSignedIn);
+  const error = useSelector((state) => state.requestHandle.error);
+  const isLoading = useSelector((state) => state.requestHandle.isLoading);
 
   const dispatch = useDispatch();
 
@@ -22,23 +25,20 @@ const App = () => {
   useEffect(() => {
     dispatch(userActions.checkIfSignedIn());
     if (isLoggedIn) {
-      navigate("/home");
+      navigate("/history");
     }
   }, [isLoggedIn]);
 
   return (
     <Header>
-      <main>
-        <Routes>
-          <Route path="/" element={<PortalDetails />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/home" element={isLoggedIn ? <Home /> : <Error />} />
-          <Route
-            path="/history"
-            element={isLoggedIn ? <History /> : <Error />}
-          />
-        </Routes>
-      </main>
+      {isLoading && <Loading />}
+      <Routes>
+        <Route path="/" element={<PortalDetails />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/upload" element={isLoggedIn ? <Upload /> : <Error />} />
+        <Route path="/history" element={isLoggedIn ? <History /> : <Error />} />
+      </Routes>
+      {error && <Error />}
     </Header>
   );
 };

@@ -17,7 +17,7 @@ export const statsActions = () => {
         url: "http://localhost:8000/stats/user",
       });
       const statsData = {
-        totalCount: totalRes.data.total,
+        totalCount: totalRes.data,
         typeWiseStats: typeRes.data,
         userWiseStats: userRes.data,
       };

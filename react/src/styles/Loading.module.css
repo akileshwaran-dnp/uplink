@@ -1,62 +1,9 @@
 .loadingContainer {
-  width: 100px;
-  height: 100px;
-  background-color: antiquewhite;
-  object-fit: contain;
-  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.226);
+  align-items: center;
+  justify-content: center;
 }
 
-.loadingImg {
-  position: relative;
-  animation: rocket 4s infinite;
-}
-
-.loadingImgTwo {
-  position: relative;
-  animation: rockettwo 3s infinite;
-}
-
-.loadingImgThree {
-  position: relative;
-  animation: rockettwo 2s infinite;
-}
-
-.loadingImgFour {
-  position: relative;
-  animation: rockettwo 1s infinite;
-}
-
-@keyframes rocket {
-  from {
-    top: 100%;
-  }
-  to {
-    top: -100%;
-  }
-}
-
-@keyframes rockettwo {
-  from {
-    top: 70%;
-  }
-  to {
-    top: -100%;
-  }
-}
-
-@keyframes rocketthree {
-  from {
-    top: 40%;
-  }
-  to {
-    top: -100%;
-  }
-}
-@keyframes rocketfour {
-  from {
-    top: 10%;
-  }
-  to {
-    top: -100%;
-  }
+.loadingContainer h2 {
+  color: white;
 }

@@ -32,14 +32,20 @@
   font-weight: bold;
   width: 30%;
   align-self: flex-end;
-  cursor: pointer;
   background-color: #ca6602;
   color: #ffffff;
   border: none;
+  cursor: pointer;
 }
 
+.signInSubmit:disabled {
+  background-color: #6c757d;
+  cursor: auto;
+}
+
+/* 
 .signInSubmit:hover {
   background-color: #ca66027a;
   color: #000000;
   transition: 0.2s ease-in;
-}
+} */
