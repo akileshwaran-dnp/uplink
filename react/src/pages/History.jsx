@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { historyActions } from "../store/history-actions";
-import DownloadDoc from "../ui/DownloadDoc";
+import { docsActions } from "../store/docs-action";
 
 import {
   Table,
@@ -12,8 +12,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Box,
   Card,
+  Button,
 } from "@mui/material";
 
 const History = () => {
@@ -26,40 +26,9 @@ const History = () => {
     dispatch(historyActions({ username: username }));
   }, []);
 
-  function renderHistoryData() {
-    const historyData = [];
-    files.map((file, index) => {
-      historyData.push(
-        <tr key={file.fileUploadID}>
-          <td>{index + 1}</td>
-          <DownloadDoc id={file.fileUploadID}>{file.filename}</DownloadDoc>
-          <td>.{file.filetype}</td>
-          <td>{file.uploadDT}</td>
-        </tr>
-      );
-    });
-    return historyData;
-  }
-
-  // return (
-  //   <>
-  //     {files !== [] ? (
-  //       <table>
-  //         <thead>
-  //           <tr>
-  //             <th>S.No</th>
-  //             <th>Filename</th>
-  //             <th>Filetype</th>
-  //             <th>Upload Data</th>
-  //           </tr>
-  //         </thead>
-  //         <tbody>{renderHistoryData()}</tbody>
-  //       </table>
-  //     ) : (
-  //       "no data found"
-  //     )}
-  //   </>
-  // );
+  const onDownloadHandler = (id) => {
+    dispatch(docsActions(id));
+  };
 
   return (
     <Card sx={{ minWidth: "60%", my: 3, p: 3 }}>
@@ -68,10 +37,10 @@ const History = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>S.No</TableCell>
-                <TableCell>Filename</TableCell>
-                <TableCell>Filetype</TableCell>
-                <TableCell>Upload Time</TableCell>
+                <TableCell align="center">S.No</TableCell>
+                <TableCell align="left">Filename</TableCell>
+                <TableCell align="left">Filetype</TableCell>
+                <TableCell align="left">Upload Time</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -80,10 +49,24 @@ const History = () => {
                   key={file.fileUploadID}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{file.filename}</TableCell>
-                  <TableCell>{file.filetype}</TableCell>
-                  <TableCell>{file.uploadDT}</TableCell>
+                  <TableCell align="center">{index + 1}</TableCell>
+                  <TableCell align="left">
+                    <Button
+                      onClick={() => onDownloadHandler(file.fileUploadID)}
+                      sx={{
+                        textTransform: "none",
+                        p: 0,
+                        "&:hover": {
+                          background: "none",
+                          textDecorationLine: "underline",
+                        },
+                      }}
+                    >
+                      {file.filename}
+                    </Button>
+                  </TableCell>
+                  <TableCell align="left">.{file.filetype}</TableCell>
+                  <TableCell align="left">{file.uploadDT}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -1,4 +1,4 @@
-from shutil import ExecError
+from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework import viewsets
 from django.http import HttpResponse
@@ -17,8 +17,10 @@ class DocsViews (viewsets.ViewSet):
     def docs_history(self, request):
         res = Response()
         username = request.query_params['username']
+        user = User.objects.get(username=username)
+        username_id = user.id
         user_files_data = Docs.objects.filter(
-            username=username).values('uploadDT', 'filename', 'filetype', 'fileUploadID').order_by('-uploadDT')
+            username_id=username_id).values('uploadDT', 'filename', 'filetype', 'fileUploadID').order_by('-uploadDT')
         user_history = []
         for user_file in user_files_data:
             user_file['uploadDT'] = user_file['uploadDT'].strftime(
@@ -50,6 +52,8 @@ class DocsViews (viewsets.ViewSet):
     def create_doc(self, request):
         data = request.FILES['uploadedFiles']
         username = request.data['username']
+        user = User.objects.get(username=username)
+        username_id = user.id
         upload_dt = request.data['uploadDT']
         res = Response()
 
@@ -60,7 +64,7 @@ class DocsViews (viewsets.ViewSet):
             fileurl = 'storage/' + username + "/" + upload_dt + "_" + filename
 
             file_data = {
-                "username": username,
+                "username_id": username_id,
                 "filename": exact_filename,
                 "fileurl": fileurl,
                 "filetype": file_type,

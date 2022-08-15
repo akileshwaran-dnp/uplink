@@ -1,6 +1,7 @@
+import axios from "axios";
+
 import { userActions } from "./user-slice";
 import { requestHandlingActions } from "./request-handling";
-import axios from "axios";
 
 export const signinActions = (userData) => {
   return async (dispatch) => {
@@ -13,6 +14,7 @@ export const signinActions = (userData) => {
       params: {
         username: userData.username,
         password: userData.password,
+        login_dt: userData.login_dt,
       },
     });
 
@@ -26,7 +28,7 @@ export const signinActions = (userData) => {
     }
 
     switch (data) {
-      case "VALID_CREDS":
+      case "LOGIN_SUCCESS":
         dispatch(userActions.signin(userData.username));
         break;
 

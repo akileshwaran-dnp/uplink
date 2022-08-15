@@ -32,13 +32,13 @@ const App = () => {
   return (
     <Header>
       {isLoading && <Loading />}
+      {error && <Error />}
       <Routes>
         <Route path="/" element={<PortalDetails />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/upload" element={isLoggedIn ? <Upload /> : <Error />} />
         <Route path="/history" element={isLoggedIn ? <History /> : <Error />} />
       </Routes>
-      {error && <Error />}
     </Header>
   );
 };

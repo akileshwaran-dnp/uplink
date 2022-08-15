@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 
 import { initialState, signInReducer } from "../reducers/signin-reducers";
 import { signinActions } from "../store/signin-actions";
+import getCurrTime from "../functions/currentDataTime";
 
 import {
   Button,
@@ -17,9 +18,11 @@ import {
   InputAdornment,
   Box,
   Grid,
+  TextField,
 } from "@mui/material";
 import SendTwoToneIcon from "@mui/icons-material/SendTwoTone";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -43,8 +46,13 @@ const SignIn = () => {
   };
 
   const signInHandler = () => {
+    let currDT = getCurrTime();
     const res = dispatch(
-      signinActions({ username: form.username, password: form.password })
+      signinActions({
+        username: form.username,
+        password: form.password,
+        login_dt: currDT,
+      })
     );
     console.log(res);
   };
@@ -57,11 +65,48 @@ const SignIn = () => {
   };
 
   return (
-    <Box sx={{ minWidth: "30%" }}>
-      <Card variant="oulined">
+    <Box sx={{ width: "40%", p: 2 }}>
+      <Card variant="oulined" sx={{ p: 2 }}>
         <CardHeader title="Sign In" />
-        <CardContent sx={{ flexDirection: "column", display: "flex" }}>
-          <FormControl sx={{ my: 2 }}>
+        <CardContent
+          sx={{
+            flexDirection: "column",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <TextField
+            variant="outlined"
+            label="Username/ Email"
+            required
+            error={form.isUsernameValid === false}
+            helperText={
+              form.isUsernameValid === false ? "min 6 characters" : ""
+            }
+            onChange={unameChangeHandler}
+            sx={{ my: 2 }}
+          />
+          <TextField
+            type={!togglePass ? "password" : "text"}
+            label="Password"
+            required
+            error={form.isPasswordValid === false}
+            onChange={passChangeHandler}
+            InputProps={{
+              endAdornment: (
+                <IconButton onClick={() => setTogglePass((prev) => !prev)}>
+                  {togglePass ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </IconButton>
+              ),
+            }}
+            helperText={
+              form.isPasswordValid === false
+                ? "atleast 1 UPPER, lower and special case"
+                : ""
+            }
+            sx={{ my: 2 }}
+          />
+          {/* <FormControl sx={{ my: 2 }}>
             <InputLabel
               htmlFor="signin-username"
               color={form.isUsernameValid ? "success" : "error"}
@@ -103,7 +148,7 @@ const SignIn = () => {
                 </InputAdornment>
               }
             />
-          </FormControl>
+          </FormControl> */}
           <Button
             variant="contained"
             endIcon={<SendTwoToneIcon />}

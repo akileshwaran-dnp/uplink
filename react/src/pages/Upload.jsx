@@ -3,38 +3,32 @@ import { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
+import getCurrTime from "../functions/currentDataTime";
+
+import {
+  Card,
+  CardHeader,
+  Container,
+  IconButton,
+  CardContent,
+  Typography,
+  Button,
+} from "@mui/material";
+import {} from "@mui/icons-material";
+import NoteAddRoundedIcon from "@mui/icons-material/NoteAddRounded";
+
+const oriStyle = { p: 2, backgroundColor: "#0091ea" };
+const successStyle = { p: 2, backgroundColor: "#4caf50" };
+
 const Upload = () => {
   const username = useSelector((state) => state.user.username);
 
   const [docs, setDocs] = useState(null);
+  const [isFile, setIsFile] = useState(false);
 
   const fileUploadHandler = (event) => {
     setDocs(event.target.files[0]);
   };
-
-  function pad2(n) {
-    return n < 10 ? "0" + n : n;
-  }
-
-  function getCurrTime() {
-    var currTime = new Date();
-
-    let standFormDT =
-      currTime.getFullYear() +
-      "-" +
-      pad2(currTime.getMonth()) +
-      "-" +
-      pad2(
-        currTime.getDate() +
-          " " +
-          pad2(currTime.getHours()) +
-          ":" +
-          pad2(currTime.getMinutes()) +
-          ":" +
-          pad2(currTime.getSeconds())
-      );
-    return standFormDT;
-  }
 
   const filesSubmitHandler = async (event) => {
     event.preventDefault();
@@ -61,13 +55,35 @@ const Upload = () => {
     }
   };
 
+  // return (
+  //   <Fragment>
+  //     <form onSubmit={filesSubmitHandler}>
+  //       <input type="file" onChange={fileUploadHandler} />
+  //       <input type="submit" value="Upload files" />
+  //     </form>
+  //   </Fragment>
+  // );
+
   return (
-    <Fragment>
-      <form onSubmit={filesSubmitHandler}>
-        <input type="file" onChange={fileUploadHandler} />
-        <input type="submit" value="Upload files" />
-      </form>
-    </Fragment>
+    <Card
+      sx={{
+        p: 3,
+        minWidth: "30%",
+      }}
+    >
+      <CardHeader title="Uplink files" />
+      <CardContent>
+        <Card sx={isFile ? successStyle : oriStyle}>
+          <input type="file" onChange={fileUploadHandler} />
+          <IconButton
+            sx={{ "&:hover": { background: "none" }, color: "white" }}
+            onClick={filesSubmitHandler}
+          >
+            <NoteAddRoundedIcon sx={{ color: "#cddc39" }} />
+          </IconButton>
+        </Card>
+      </CardContent>
+    </Card>
   );
 };
 

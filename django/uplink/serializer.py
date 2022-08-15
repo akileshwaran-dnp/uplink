@@ -12,5 +12,5 @@ class UsersSerializer (ModelSerializer):
 class FilesSerializer (ModelSerializer):
     class Meta:
         model = Docs
-        fields = ['username', 'filename', 'fileurl',
+        fields = ['username_id', 'filename', 'fileurl',
                   'filetype', 'uploadDT', 'fileUploadID']

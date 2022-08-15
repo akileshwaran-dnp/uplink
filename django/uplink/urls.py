@@ -1,8 +1,9 @@
 from django.urls import path
 # from .views.views import *
-from .views.auth_views import *
 from .views.stats_views import *
 from .views.docs_views import *
+from .views.signup_view import SignUpView
+from .views.signin_view import SignInView
 
 # urlpatterns = [
 #     path('auth/signin', SigInViews.as_view(), name='signin'),
@@ -24,8 +25,8 @@ urlpatterns = [
     path('stats/user', StatsViews.as_view({'get': 'userwise_stats'})),
 
     # authentication
-    path('auth/signin', SigInViews.as_view(), name='signin'),
-    path('auth/signup', SignUpViews.as_view(), name='signup'),
+    path('auth/signin', SignInView.as_view(), name='signin'),
+    path('auth/signup', SignUpView.as_view(), name='signup'),
 
     # document
     path('files/history', DocsViews.as_view({'get': 'docs_history'})),
