@@ -1,5 +1,13 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Container,
+} from "@mui/material";
 
 import { requestHandlingActions } from "../store/request-handling";
 
@@ -15,11 +23,13 @@ const Error = (props) => {
   };
 
   return (
-    <>
-      <h3>{error}</h3>
-      <p>{message}</p>
-      <button onClick={viewedHandler}>Okay</button>
-    </>
+    <Card sx={{ width: "40%", backgroundColor: "#dfe7fd" }}>
+      <CardHeader title={error} />
+      <CardContent>{message}</CardContent>
+      <CardActions>
+        <Button onClick={viewedHandler}>Okay</Button>
+      </CardActions>
+    </Card>
   );
 };
 
