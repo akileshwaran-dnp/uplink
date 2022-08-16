@@ -20,14 +20,14 @@ const History = () => {
   const dispatch = useDispatch();
 
   const files = useSelector((state) => state.history.files);
-  const username = useSelector((state) => state.user.username);
+  const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
-    dispatch(historyActions({ username: username }));
+    dispatch(historyActions({ token: token }));
   }, []);
 
   const onDownloadHandler = (id) => {
-    dispatch(docsActions(id));
+    dispatch(docsActions({ id: id, token: token }));
   };
 
   return (

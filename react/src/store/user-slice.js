@@ -1,32 +1,32 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { username: "", isSignedIn: false };
+const initialState = { username: "", isAuthenticated: false, token: null };
 
 const userSlice = createSlice({
   name: "user",
   initialState: initialState,
   reducers: {
     signin(state, action) {
-      state.isSignedIn = true;
-      state.username = action.payload;
-      localStorage.setItem("isSignedIn", "yes");
-      localStorage.setItem("username", action.payload);
+      state.isAuthenticated = true;
+      state.username = action.payload.username;
+      state.token = action.payload.token;
+      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("username", action.payload.username);
     },
 
     signout(state) {
-      state.isSignedIn = false;
+      state.isAuthenticated = false;
       state.username = "";
-      localStorage.removeItem("isSignedIn");
+      state.token = null;
+      localStorage.removeItem("token");
       localStorage.removeItem("username");
     },
 
-    checkIfSignedIn(state) {
-      if (
-        localStorage.getItem("isSignedIn") &&
-        localStorage.getItem("isSignedIn") === "yes"
-      ) {
-        state.isSignedIn = "yes";
+    checkIfAuthenticated(state) {
+      if (localStorage.getItem("token")) {
+        state.isAuthenticated = true;
         state.username = localStorage.getItem("username");
+        state.token = localStorage.getItem("token");
       }
     },
   },

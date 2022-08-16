@@ -2,8 +2,8 @@ import React from "react";
 import { useReducer, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { initialState, signInReducer } from "../reducers/signin-reducers";
-import { signinActions } from "../store/signin-actions";
+import { initialState, AuthReducer } from "../reducers/auth-reducers";
+import { signInActions } from "../store/auth-actions";
 import getCurrTime from "../functions/currentDataTime";
 
 import {
@@ -11,13 +11,8 @@ import {
   Card,
   CardHeader,
   CardContent,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
   IconButton,
-  InputAdornment,
   Box,
-  Grid,
   TextField,
 } from "@mui/material";
 import SendTwoToneIcon from "@mui/icons-material/SendTwoTone";
@@ -29,7 +24,7 @@ const SignIn = () => {
 
   const [togglePass, setTogglePass] = useState(false);
 
-  const [form, dispathForm] = useReducer(signInReducer, initialState);
+  const [form, dispathForm] = useReducer(AuthReducer, initialState);
 
   const unameChangeHandler = (event) => {
     dispathForm({
@@ -48,20 +43,11 @@ const SignIn = () => {
   const signInHandler = () => {
     let currDT = getCurrTime();
     const res = dispatch(
-      signinActions({
+      signInActions({
         username: form.username,
         password: form.password,
-        login_dt: currDT,
       })
     );
-    console.log(res);
-  };
-
-  const toggleHandler = () => {
-    console.log(togglePass);
-    setTogglePass((prev) => {
-      return !prev;
-    });
   };
 
   return (
@@ -101,54 +87,11 @@ const SignIn = () => {
             }}
             helperText={
               form.isPasswordValid === false
-                ? "atleast 1 UPPER, lower and special case"
+                ? "atleast 1 UPPER, lower, special case and number"
                 : ""
             }
             sx={{ my: 2 }}
           />
-          {/* <FormControl sx={{ my: 2 }}>
-            <InputLabel
-              htmlFor="signin-username"
-              color={form.isUsernameValid ? "success" : "error"}
-            >
-              Username
-            </InputLabel>
-            <OutlinedInput
-              id="signin-username"
-              type="text"
-              label="Username"
-              color={form.isUsernameValid ? "success" : "error"}
-              onChange={unameChangeHandler}
-              required
-            />
-          </FormControl>
-          <FormControl sx={{ my: 2 }}>
-            <InputLabel
-              htmlFor="signin-password"
-              color={form.isPasswordValid ? "success" : "error"}
-            >
-              Password
-            </InputLabel>
-            <OutlinedInput
-              id="sign-password"
-              type={togglePass ? "text" : "password"}
-              label="Password"
-              color={form.isPasswordValid ? "success" : "error"}
-              onChange={passChangeHandler}
-              required
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={toggleHandler}
-                    onMouseDown={(event) => event.preventDefault()}
-                    edge="end"
-                  >
-                    {togglePass ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl> */}
           <Button
             variant="contained"
             endIcon={<SendTwoToneIcon />}

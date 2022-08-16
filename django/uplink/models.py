@@ -4,11 +4,6 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class Users(models.Model):
-    username = models.CharField(max_length=32, primary_key=True)
-    password = models.CharField(max_length=32)
-
-
 class Docs(models.Model):
     username_id = models.ForeignKey(User, on_delete=models.CASCADE)
     filename = models.CharField(max_length=32)

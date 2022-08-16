@@ -1,21 +1,16 @@
 from django.urls import path
-# from .views.views import *
 from .views.stats_views import *
-from .views.docs_views import *
+from .views.docs_views import DocsViewsSets
 from .views.signup_view import SignUpView
-from .views.signin_view import SignInView
+from .views.signin_view import login_user, logout_user
+from rest_framework.routers import DefaultRouter
 
-# urlpatterns = [
-#     path('auth/signin', SigInViews.as_view(), name='signin'),
-#     path('auth/signup', SignUpViews.as_view(), name='signup'),
-#     path('files/history', DocsViews.as_view({'get': 'history'})),
-#     path('files/upload', DocsViews.as_view({'post': 'document'})),
-#     path('files/save', DocsViews.as_view({'get': 'save_doc'})),
-#     path('stats/total', StatisticsView.as_view({'get': 'get_total_stats'})),
-#     path('stats/type', StatisticsView.as_view({'get': 'get_type_stats'})),
-#     path('stats/user', StatisticsView.as_view({'get': 'get_user_stats'}))
-# ]
+router = DefaultRouter()
+router.register('docs', DocsViewsSets, basename='user')
 
+# docs/ => list
+# docs/id => retrive
+# docs/ => create POST
 
 urlpatterns = [
 
@@ -25,11 +20,10 @@ urlpatterns = [
     path('stats/user', StatsViews.as_view({'get': 'userwise_stats'})),
 
     # authentication
-    path('auth/signin', SignInView.as_view(), name='signin'),
+    path('auth/signin', login_user),
+    path('auth/signout', logout_user),
     path('auth/signup', SignUpView.as_view(), name='signup'),
 
-    # document
-    path('files/history', DocsViews.as_view({'get': 'docs_history'})),
-    path('files/save', DocsViews.as_view({'get': 'download_doc'})),
-    path('files/upload', DocsViews.as_view({'post': 'create_doc'})),
 ]
+
+urlpatterns += router.urls

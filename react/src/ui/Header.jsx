@@ -3,24 +3,24 @@ import { Link, useNavigate, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { userActions } from "../store/user-slice";
-import classes from "../styles/Header.module.css";
+import { signOutActions } from "../store/auth-actions";
 
 import { AppBar, Toolbar, Typography, Button, Grid } from "@mui/material";
 import { Box, Container } from "@mui/system";
 import CellTowerRoundedIcon from "@mui/icons-material/CellTowerRounded";
 import FaceTwoToneIcon from "@mui/icons-material/FaceTwoTone";
-import BoyRoundedIcon from "@mui/icons-material/BoyRounded";
 
 const Header = (props) => {
   const dispatch = useDispatch();
 
   const isLoggedIn = useSelector((state) => state.user.isSignedIn);
   const username = useSelector((state) => state.user.username);
+  const token = useSelector((state) => state.user.token);
 
   const navigate = useNavigate();
 
   const logoutHandler = () => {
-    dispatch(userActions.signout());
+    dispatch(signOutActions(token));
     navigate("/");
   };
 
@@ -34,76 +34,16 @@ const Header = (props) => {
     color: "#FDCA40",
   };
 
-  // return (
-  //   <Fragment>
-  //     <header className={classes.header}>
-  //       <nav>
-  //         <ul>
-  //           <span className={classes.logo}>
-  //             <NavLink
-  //               style={({ isActive }) => (isActive ? activeStyle : linkStyle)}
-  //               to="/"
-  //             >
-  //               Uplink
-  //             </NavLink>
-  //           </span>
-  //           <li>
-  //             {!isLoggedIn && (
-  //               <NavLink
-  //                 to="/signin"
-  //                 style={({ isActive }) => (isActive ? activeStyle : linkStyle)}
-  //               >
-  //                 <span className="material-symbols-rounded">man_2</span>
-  //                 <h4>Login</h4>
-  //               </NavLink>
-  //             )}
-  //             {isLoggedIn && (
-  //               <NavLink
-  //                 to="/upload"
-  //                 style={({ isActive }) => (isActive ? activeStyle : linkStyle)}
-  //               >
-  //                 <span className="material-symbols-rounded">history</span>
-  //                 <h4>Upload</h4>
-  //               </NavLink>
-  //             )}
-  //             {isLoggedIn && (
-  //               <NavLink
-  //                 to="/history"
-  //                 style={({ isActive }) => (isActive ? activeStyle : linkStyle)}
-  //               >
-  //                 <span className="material-symbols-rounded">history</span>
-  //                 <h4>History</h4>
-  //               </NavLink>
-  //             )}
-  //             {isLoggedIn && (
-  //               <div style={linkStyle} onClick={logoutHandler}>
-  //                 <span className="material-symbols-rounded">logout</span>
-  //                 <h4>Logout</h4>
-  //               </div>
-  //             )}
-  //             {isLoggedIn && (
-  //               <div style={linkStyle}>
-  //                 <span className="material-symbols-rounded">
-  //                   familiar_face_and_zone
-  //                 </span>
-  //                 <h5>{username}</h5>
-  //               </div>
-  //             )}
-  //           </li>
-  //         </ul>
-  //       </nav>
-  //     </header>
-  //     {props.children}
-  //   </Fragment>
-  // );
-
   return (
     <Fragment>
       <AppBar position="sticky">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <CellTowerRoundedIcon
-              sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+              sx={{
+                display: { xs: "none", md: "flex" },
+                mr: 1,
+              }}
             />
             <Typography
               sx={{
@@ -123,7 +63,7 @@ const Header = (props) => {
                 UPLINK
               </NavLink>
             </Typography>
-            {isLoggedIn && (
+            {token && (
               <Box
                 sx={{
                   flexGrow: 1,
@@ -167,8 +107,15 @@ const Header = (props) => {
                 </Button>
               </Box>
             )}
-            {isLoggedIn && (
-              <Box sx={{ flexGrow: 0 }}>
+            {token && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifySelf: "flex-end",
+                  justifyContent: "center",
+                  flexDirection: "row",
+                }}
+              >
                 <Button
                   sx={{ color: "white" }}
                   endIcon={<FaceTwoToneIcon />}
@@ -176,9 +123,16 @@ const Header = (props) => {
                 >
                   Logout
                 </Button>
+                <Typography
+                  variant="overline"
+                  gutterBottom
+                  sx={{ fontSize: "8px" }}
+                >
+                  @ {username}
+                </Typography>
               </Box>
             )}
-            {!isLoggedIn && (
+            {!token && (
               <Box sx={{ flexGrow: 0 }}>
                 <Button
                   sx={{

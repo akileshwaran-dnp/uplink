@@ -6,9 +6,9 @@ export const initialState = {
   isFormValid: false,
 };
 
-export const signInReducer = (state = initialState, action) => {
+export const AuthReducer = (state = initialState, action) => {
   if (action.type === "UNAME_CHANGE") {
-    const usernameRegex = /^[a-z]{4,}$/;
+    const usernameRegex = /^[a-z]{6,}$/;
     let uv = action.payload.includes("@") || usernameRegex.test(action.payload);
 
     return {
@@ -21,7 +21,9 @@ export const signInReducer = (state = initialState, action) => {
   }
 
   if (action.type === "PASS_CHANGE") {
-    let pv = state.isUsernameValid && action.payload.length >= 4;
+    const passRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z_\d@$!%*?&]{6,}$/;
+    let pv = state.isUsernameValid && passRegex.test(action.payload);
     return {
       username: state.username,
       password: action.payload,

@@ -1,15 +1,20 @@
 import axios from "axios";
+import { requestHandlingActions } from "./request-handling";
 
-export const docsActions = (id) => {
+export const docsActions = (payload) => {
   return async (dispatch) => {
+    dispatch(requestHandlingActions.requestPending());
+
     const response = await axios({
       method: "get",
-      url: "http://localhost:8000/files/save",
+      url: `http://localhost:8000/docs/${payload.id}`,
       responseType: "blob",
-      params: {
-        fileUploadID: id,
+      headers: {
+        Authorization: `Token ${payload.token}`,
       },
     });
+
+    dispatch(requestHandlingActions.responseReceived());
 
     // error
     const reqError = await response.data.text();
@@ -17,6 +22,7 @@ export const docsActions = (id) => {
       alert("server error");
       return;
     }
+
     const blobURL = window.URL.createObjectURL(response.data);
     const tempLink = document.createElement("a");
     tempLink.style.display = "none";

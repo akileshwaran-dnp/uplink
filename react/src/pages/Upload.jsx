@@ -22,6 +22,7 @@ const successStyle = { p: 2, backgroundColor: "#4caf50" };
 
 const Upload = () => {
   const username = useSelector((state) => state.user.username);
+  const token = useSelector((state) => state.user.token);
 
   const [docs, setDocs] = useState(null);
   const [isFile, setIsFile] = useState(false);
@@ -41,9 +42,12 @@ const Upload = () => {
 
     const response = await axios({
       method: "post",
-      url: "http://localhost:8000/files/upload",
+      url: "http://localhost:8000/docs/",
       data: formData,
-      headers: { "Content-Type": "multipart/form-data" },
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Token ${token}`,
+      },
     });
 
     const data = await response.data;
@@ -53,16 +57,8 @@ const Upload = () => {
     } else {
       alert("File Uploaded Successfully at " + data);
     }
+    document.getElementById("upload-input").value = null;
   };
-
-  // return (
-  //   <Fragment>
-  //     <form onSubmit={filesSubmitHandler}>
-  //       <input type="file" onChange={fileUploadHandler} />
-  //       <input type="submit" value="Upload files" />
-  //     </form>
-  //   </Fragment>
-  // );
 
   return (
     <Card
@@ -74,7 +70,7 @@ const Upload = () => {
       <CardHeader title="Uplink files" />
       <CardContent>
         <Card sx={isFile ? successStyle : oriStyle}>
-          <input type="file" onChange={fileUploadHandler} />
+          <input type="file" id="upload-input" onChange={fileUploadHandler} />
           <IconButton
             sx={{ "&:hover": { background: "none" }, color: "white" }}
             onClick={filesSubmitHandler}

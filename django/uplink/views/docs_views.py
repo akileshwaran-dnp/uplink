@@ -7,17 +7,22 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.conf import settings
 import os
-
+from rest_framework.status import (HTTP_200_OK)
+from rest_framework.decorators import action
 
 from ..serializer import FilesSerializer
 from ..models import Docs
+from rest_framework import permissions
 
 
-class DocsViews (viewsets.ViewSet):
-    def docs_history(self, request):
-        res = Response()
-        username = request.query_params['username']
-        user = User.objects.get(username=username)
+class DocsViewsSets (viewsets.ViewSet):
+
+    queryset = Docs.objects.all()
+    serializer_class = FilesSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def list(self, request):
+        user = request.user
         username_id = user.id
         user_files_data = Docs.objects.filter(
             username_id=username_id).values('uploadDT', 'filename', 'filetype', 'fileUploadID').order_by('-uploadDT')
@@ -26,15 +31,12 @@ class DocsViews (viewsets.ViewSet):
             user_file['uploadDT'] = user_file['uploadDT'].strftime(
                 "%H:%M:%S %m-%d-%Y")
             user_history.append(user_file)
-        res.data = user_history
-        return res
+        return Response({'docs_history': user_history}, status=HTTP_200_OK)
 
-    def download_doc(self, request):
-        fileUpID = request.query_params['fileUploadID']
-
+    def retrieve(self, request, pk=None):
         try:
             fileData = Docs.objects.values(
-                'fileurl', 'filename', 'filetype').filter(fileUploadID=fileUpID)
+                'fileurl', 'filename', 'filetype').filter(fileUploadID=pk)
             fileurl = fileData[0]['fileurl']
             filename = fileData[0]['filename'] + "." + fileData[0]['filetype']
 
@@ -49,10 +51,10 @@ class DocsViews (viewsets.ViewSet):
             res.data = "FILE_INACCESSIBLE"
             return res
 
-    def create_doc(self, request):
+    def create(self, request):
         data = request.FILES['uploadedFiles']
-        username = request.data['username']
-        user = User.objects.get(username=username)
+        user = request.user
+        username = user.username
         username_id = user.id
         upload_dt = request.data['uploadDT']
         res = Response()

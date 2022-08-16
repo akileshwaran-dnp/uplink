@@ -2,10 +2,13 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from django.db.models import Count
 from django.db.models import F
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
 
 from ..models import Docs
 
 
+@permission_classes((AllowAny,))
 class StatsViews(viewsets.ViewSet):
     def aggregate_stats(self, request):
         res = Response()
@@ -22,8 +25,6 @@ class StatsViews(viewsets.ViewSet):
 
     def userwise_stats(self, request):
         res = Response()
-        # user_count = Docs.objects.values('username_id').annotate(
-        #     count=Count('filename')).order_by('username_id')
         user_count = Docs.objects.values(username=F('username_id__username')).annotate(
             count=Count('filename')).order_by('username_id')
         res.data = user_count

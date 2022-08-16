@@ -14,7 +14,7 @@ import { userActions } from "./store/user-slice";
 import Upload from "./pages/Upload";
 
 const App = () => {
-  const isLoggedIn = useSelector((state) => state.user.isSignedIn);
+  const isLoggedIn = useSelector((state) => state.user.isAuthenticated);
   const error = useSelector((state) => state.requestHandle.error);
   const isLoading = useSelector((state) => state.requestHandle.isLoading);
 
@@ -23,7 +23,7 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(userActions.checkIfSignedIn());
+    dispatch(userActions.checkIfAuthenticated());
     if (isLoggedIn) {
       navigate("/history");
     }
@@ -36,7 +36,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<PortalDetails />} />
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/upload" element={isLoggedIn ? <Upload /> : <Error />} />
+        <Route
+          path="/upload"
+          element={isLoggedIn ? <Upload /> : <Error message="404" />}
+        />
         <Route path="/history" element={isLoggedIn ? <History /> : <Error />} />
       </Routes>
     </Header>

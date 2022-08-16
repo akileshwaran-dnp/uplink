@@ -1,44 +1,41 @@
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import permission_classes
+from rest_framework.status import (
+    HTTP_409_CONFLICT, HTTP_200_OK, HTTP_400_BAD_REQUEST)
 
 
+@permission_classes((AllowAny,))
 class SignUpView(APIView):
 
     def get(self, request):
-        USERNAME = 'username'
-        username = request.query_params[USERNAME]
-        res = Response()
+        username = request.data.get('username') or ''
         if User.objects.filter(username=username).exists():
-            res.data = "USERNAME_UNAVAILABLE"
-        else:
-            res.data = "USERNAME_AVAILABLE"
-        return res
+            return Response({'available': 'Username is available'}, status=HTTP_200_OK)
+        return Response({'unavailable': 'Username is taken'}, status=HTTP_409_CONFLICT)
 
     def post(self, request):
 
-        USERNAME = 'username'
-        PASSWORD = 'password'
-        FIRSTNAME = 'first_name'
-        LASTNAME = 'last_name'
-        EMAIL = 'email'
-        DATE_JOINED = 'date_joined'
+        if not 'username' in request.data and 'password' in request.data:
+            return Response({'bad request': 'Please provide username and password'}, status=HTTP_400_BAD_REQUEST)
 
-        res = Response()
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email') or ''
+        firstname = request.data.get('first_name') or ''
+        lastname = request.data.get('last_name') or ''
 
-        user_data = request.data
+        if User.objects.filter(username=username).exists():
+            return Response({'conflict': 'Username already exists'}, status=HTTP_409_CONFLICT)
 
-        if User.objects.filter(username=user_data[USERNAME]).exists():
-            res.data = "DUPLICATE_UNAME"
-            return res
-
-        user = User.objects.create_user(
-            username=user_data[USERNAME],
-            password=user_data[PASSWORD],
-            first_name=user_data[FIRSTNAME],
-            last_name=user_data[LASTNAME],
-            email=user_data[EMAIL],
-            date_joined=user_data[DATE_JOINED]
+        User.objects.create_user(
+            username=username,
+            password=password,
+            first_name=firstname,
+            last_name=lastname,
+            email=email,
         )
-        res.data = "SIGNUP_SUCCESS"
-        return res
+
+        return Response({'success': 'Signup successful'}, status=HTTP_200_OK)

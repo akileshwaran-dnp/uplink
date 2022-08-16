@@ -1,29 +1,34 @@
 from django.contrib.auth.models import User
-from django.contrib.auth.models import UserManager
-from rest_framework.views import APIView
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import permission_classes, api_view
+from rest_framework.status import (HTTP_200_OK, HTTP_404_NOT_FOUND)
 
 
-class SignInView(APIView):
-    def get(self, request):
-        USERNAME = 'username'
-        PASSWORD = 'password'
-        LOGIN_DT = 'login_dt'
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes((AllowAny,))
+def login_user(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
 
-        username = request.query_params[USERNAME]
-        password = request.query_params[PASSWORD]
-        login_dt = request.query_params[LOGIN_DT]
+    user = authenticate(username=username, password=password)
 
-        res = Response()
-        if User.objects.filter(username=username).exists():
-            user = User.objects.get(username=username)
-            res.data = "INCORRECT_PASSWORD"
-            if User.check_password(user, password):
-                user.last_login = login_dt
-                user.save()
+    if user:
+        login(request, user)
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key, 'username': username}, status=HTTP_200_OK)
 
-                res.data = "LOGIN_SUCCESS"
-            return res
+    elif User.objects.filter(username=username).exists():
+        return Response({'error': 'INCORRECT_PASSWORD'}, status=HTTP_404_NOT_FOUND)
+    else:
+        return Response({'error': 'INVALID_USERNAME'}, status=HTTP_404_NOT_FOUND)
 
-        res.data = "INVALID_USERNAME"
-        return res
+
+@api_view(['POST'])
+def logout_user(request):
+    logout(request)
+    return Response("success")
