@@ -6,20 +6,20 @@ const userSlice = createSlice({
   name: "user",
   initialState: initialState,
   reducers: {
-    signin(state, action) {
-      state.isAuthenticated = true;
-      state.username = action.payload.username;
-      state.token = action.payload.token;
-      localStorage.setItem("token", action.payload.token);
-      localStorage.setItem("username", action.payload.username);
-    },
-
     signout(state) {
       state.isAuthenticated = false;
       state.username = "";
       state.token = null;
       localStorage.removeItem("token");
       localStorage.removeItem("username");
+    },
+
+    signin(state, action) {
+      state.isAuthenticated = true;
+      state.username = action.payload.username;
+      state.token = action.payload.token;
+      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("username", action.payload.username);
     },
 
     checkIfAuthenticated(state) {
@@ -34,4 +34,4 @@ const userSlice = createSlice({
 
 export const userActions = userSlice.actions;
 
-export default userSlice.reducer;
+export const userReducer = userSlice.reducer;

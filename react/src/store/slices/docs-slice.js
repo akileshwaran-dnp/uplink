@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const filesSlice = createSlice({
+const docsSlice = createSlice({
   name: "history",
   initialState: {
     files: [],
@@ -20,6 +20,6 @@ const filesSlice = createSlice({
   },
 });
 
-export const filesActions = filesSlice.actions;
+export const docsActions = docsSlice.actions;
 
-export default filesSlice.reducer;
+export const docsReducer = docsSlice.reducer;

@@ -1,14 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const portalSlice = createSlice({
+const statisticsSlice = createSlice({
   name: "portal",
   initialState: {
-    totalCount: null,
+    totalCount: 0,
     typeWise: [],
     userWise: [],
   },
   reducers: {
-    setPortalDetails(state, action) {
+    setStatistics(state, action) {
       state.totalCount = action.payload.totalCount;
       state.typeWise = action.payload.typeWiseStats;
       state.userWise = action.payload.userWiseStats;
@@ -16,6 +16,6 @@ const portalSlice = createSlice({
   },
 });
 
-export const portalActions = portalSlice.actions;
+export const statisticsActions = statisticsSlice.actions;
 
-export default portalSlice.reducer;
+export const statisticsReducer = statisticsSlice.reducer;

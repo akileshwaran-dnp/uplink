@@ -1,15 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./user-slice";
-import filesReducer from "./files-slice";
-import portalReducer from "./portal-slice";
-import requestReducer from "./request-handling";
+import { userReducer } from "./slices/user-slice";
+import { docsReducer } from "./slices/docs-slice";
+import { statisticsReducer } from "./slices/statistics-slice";
+import { alertReducer } from "./slices/alert-slice";
 
 const store = configureStore({
   reducer: {
     user: userReducer,
-    history: filesReducer,
-    portal: portalReducer,
-    requestHandle: requestReducer,
+    docs: docsReducer,
+    statistics: statisticsReducer,
+    alert: alertReducer,
   },
 });
 

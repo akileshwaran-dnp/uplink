@@ -1,9 +1,8 @@
 import React, { Fragment } from "react";
-import { Link, useNavigate, NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { userActions } from "../store/user-slice";
-import { signOutActions } from "../store/auth-actions";
+import { signOutAsyncAction } from "../store/actions/auth-actions";
 
 import { AppBar, Toolbar, Typography, Button, Grid } from "@mui/material";
 import { Box, Container } from "@mui/system";
@@ -13,14 +12,14 @@ import FaceTwoToneIcon from "@mui/icons-material/FaceTwoTone";
 const Header = (props) => {
   const dispatch = useDispatch();
 
-  const isLoggedIn = useSelector((state) => state.user.isSignedIn);
+  const isLoggedIn = useSelector((state) => state.user.isAuthenticated);
   const username = useSelector((state) => state.user.username);
   const token = useSelector((state) => state.user.token);
 
   const navigate = useNavigate();
 
   const logoutHandler = () => {
-    dispatch(signOutActions(token));
+    dispatch(signOutAsyncAction(token));
     navigate("/");
   };
 
@@ -63,7 +62,7 @@ const Header = (props) => {
                 UPLINK
               </NavLink>
             </Typography>
-            {token && (
+            {isLoggedIn && (
               <Box
                 sx={{
                   flexGrow: 1,
@@ -107,7 +106,7 @@ const Header = (props) => {
                 </Button>
               </Box>
             )}
-            {token && (
+            {isLoggedIn && (
               <Box
                 sx={{
                   display: "flex",
@@ -132,7 +131,7 @@ const Header = (props) => {
                 </Typography>
               </Box>
             )}
-            {!token && (
+            {!isLoggedIn && (
               <Box sx={{ flexGrow: 0 }}>
                 <Button
                   sx={{

@@ -17,7 +17,7 @@ const Counter = (props) => {
       start += 1;
       setCount(String(start) + finalCount.substring(3));
       if (start === end) clearInterval(timer);
-    }, 100);
+    }, 10);
   }, [finalCount]);
 
   return <>{count}</>;

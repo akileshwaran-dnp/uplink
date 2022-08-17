@@ -1,9 +1,6 @@
 import React, { Fragment } from "react";
 import { useState } from "react";
-import axios from "axios";
-import { useSelector } from "react-redux";
-
-import getCurrTime from "../functions/currentDataTime";
+import { useSelector, useDispatch } from "react-redux";
 
 import {
   Card,
@@ -11,16 +8,16 @@ import {
   Container,
   IconButton,
   CardContent,
-  Typography,
-  Button,
 } from "@mui/material";
-import {} from "@mui/icons-material";
 import NoteAddRoundedIcon from "@mui/icons-material/NoteAddRounded";
+import { docsAsyncCreateAction } from "../store/actions/docs-action";
 
 const oriStyle = { p: 2, backgroundColor: "#0091ea" };
 const successStyle = { p: 2, backgroundColor: "#4caf50" };
 
 const Upload = () => {
+  const dispatch = useDispatch();
+
   const username = useSelector((state) => state.user.username);
   const token = useSelector((state) => state.user.token);
 
@@ -33,30 +30,8 @@ const Upload = () => {
 
   const filesSubmitHandler = async (event) => {
     event.preventDefault();
-    let dt = getCurrTime();
 
-    let formData = new FormData();
-    formData.append("uploadedFiles", docs);
-    formData.append("username", username);
-    formData.append("uploadDT", dt);
-
-    const response = await axios({
-      method: "post",
-      url: "http://localhost:8000/docs/",
-      data: formData,
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Token ${token}`,
-      },
-    });
-
-    const data = await response.data;
-
-    if (data == "UPLOAD_FAILURE") {
-      alert("upload failure");
-    } else {
-      alert("File Uploaded Successfully at " + data);
-    }
+    dispatch(docsAsyncCreateAction({ docs: docs, token: token }));
     document.getElementById("upload-input").value = null;
   };
 

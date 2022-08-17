@@ -7,7 +7,7 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.conf import settings
 import os
-from rest_framework.status import (HTTP_200_OK)
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from rest_framework.decorators import action
 
 from ..serializer import FilesSerializer
@@ -46,10 +46,7 @@ class DocsViewsSets (viewsets.ViewSet):
             response['Content-Disposition'] = f'filename= {filename}'
             return response
         except:
-            res = Response()
-            res.status_code = 400
-            res.data = "FILE_INACCESSIBLE"
-            return res
+            return Response({'error': "file not found"}, HTTP_404_NOT_FOUND)
 
     def create(self, request):
         data = request.FILES['uploadedFiles']
@@ -78,11 +75,9 @@ class DocsViewsSets (viewsets.ViewSet):
                 path_to_save = default_storage.save(
                     fileurl, ContentFile(data.read()))
                 os.path.join(settings.MEDIA_ROOT, path_to_save)
-                res.data = upload_dt
-                return res
+                return Response({'uploadDT': upload_dt}, HTTP_200_OK)
             else:
-                res.data = "UPLOAD_FAILURE"
-                return res
+                return Response({'error': 'required data not found'}, HTTP_400_BAD_REQUEST)
         except:
             res.data = "UPLOAD_FAILURE"
             return res

@@ -1,9 +1,0 @@
-.loadingContainer {
-  background-color: rgba(0, 0, 0, 0.226);
-  align-items: center;
-  justify-content: center;
-}
-
-.loadingContainer h2 {
-  color: white;
-}

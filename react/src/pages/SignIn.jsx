@@ -3,8 +3,7 @@ import { useReducer, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { initialState, AuthReducer } from "../reducers/auth-reducers";
-import { signInActions } from "../store/auth-actions";
-import getCurrTime from "../functions/currentDataTime";
+import { signInAsyncAction } from "../store/actions/auth-actions";
 
 import {
   Button,
@@ -41,9 +40,8 @@ const SignIn = () => {
   };
 
   const signInHandler = () => {
-    let currDT = getCurrTime();
-    const res = dispatch(
-      signInActions({
+    dispatch(
+      signInAsyncAction({
         username: form.username,
         password: form.password,
       })

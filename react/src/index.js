@@ -6,7 +6,6 @@ import { Provider } from "react-redux";
 import App from "./App";
 import "./index.css";
 import store from "./store/index";
-import { StyledEngineProvider } from "@mui/material/styles";
 
 const root = createRoot(document.getElementById("root"));
 root.render(

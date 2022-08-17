@@ -1,23 +1,22 @@
-import React, { Fragment } from "react";
-import { statsActions } from "../store/stats-actions";
+import React from "react";
+import { statisticsAsyncAction } from "../store/actions/statistics-actions";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 
 import Bar from "../ui/Bar";
 import Counter from "../ui/Counter";
-import Loading from "../ui/Loading";
-import { Card, CardContent, CardHeader, Typography } from "@mui/material";
+import { Card, CardContent, CardHeader } from "@mui/material";
 import { Box } from "@mui/system";
 
-const PortalDetails = () => {
+const Statistics = () => {
   const dispatch = useDispatch();
-  const totalCount = useSelector((state) => state.portal.totalCount);
-  const typeWiseStats = useSelector((state) => state.portal.typeWise);
-  const userWiseStats = useSelector((state) => state.portal.userWise);
+  const totalCount = useSelector((state) => state.statistics.totalCount);
+  const typeWiseStats = useSelector((state) => state.statistics.typeWise);
+  const userWiseStats = useSelector((state) => state.statistics.userWise);
 
   useEffect(() => {
-    dispatch(statsActions());
+    dispatch(statisticsAsyncAction());
   }, []);
 
   function renderTypeWise() {
@@ -57,14 +56,18 @@ const PortalDetails = () => {
   }
 
   return (
-    <Fragment>
-      {/* <h2>
-        Files Uplinked:{" "}
-        <Counter start={"0"} end={totalCount ? totalCount.toString() : "0"} />
-      </h2> */}
-      {/* <div>{renderTypeWise()}</div> */}
+    <Box
+      sx={{
+        minWidth: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
       <Card sx={{ width: "50%", my: 2 }}>
-        <CardHeader title={"Files Uplinked: " + totalCount} />
+        <CardContent>
+          Files Uplink: <Counter start="0" end={String(totalCount)} />
+        </CardContent>
       </Card>
       <Card sx={{ width: "50%", my: 2 }}>
         <CardHeader title="Typewise Files Uplinked" />
@@ -74,8 +77,8 @@ const PortalDetails = () => {
         <CardHeader title="Userwise Files Uplinked" />
         {renderUserWise()}
       </Card>
-    </Fragment>
+    </Box>
   );
 };
 
-export default PortalDetails;
+export default Statistics;

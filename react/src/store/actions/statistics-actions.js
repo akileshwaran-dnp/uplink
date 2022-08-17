@@ -1,7 +1,7 @@
 import axios from "axios";
-import { portalActions } from "./portal-slice";
+import { statisticsActions } from "../slices/statistics-slice";
 
-export const statsActions = () => {
+export const statisticsAsyncAction = () => {
   return async (dispatch) => {
     const getData = async () => {
       const totalRes = await axios({
@@ -24,6 +24,6 @@ export const statsActions = () => {
       return statsData;
     };
     const statsData = await getData();
-    dispatch(portalActions.setPortalDetails(statsData));
+    dispatch(statisticsActions.setStatistics(statsData));
   };
 };

@@ -1,16 +1,19 @@
 from django.urls import path
-from .views.stats_views import *
+from rest_framework.routers import DefaultRouter
+
+from .views.stats_views import StatsViews
 from .views.docs_views import DocsViewsSets
 from .views.signup_view import SignUpView
 from .views.signin_view import login_user, logout_user
-from rest_framework.routers import DefaultRouter
 
-router = DefaultRouter()
-router.register('docs', DocsViewsSets, basename='user')
 
+# document related views
 # docs/ => list
 # docs/id => retrive
 # docs/ => create POST
+router = DefaultRouter()
+router.register('docs', DocsViewsSets, basename='user')
+
 
 urlpatterns = [
 

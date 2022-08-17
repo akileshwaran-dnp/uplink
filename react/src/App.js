@@ -1,23 +1,19 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect } from "react";
 
 import SignIn from "./pages/SignIn";
 
-import PortalDetails from "./pages/PortalDetails";
+import Statistics from "./pages/Statistics";
 import Header from "./ui/Header";
 import History from "./pages/History";
-import Error from "./ui/Error";
-import Loading from "./ui/Loading";
 
-import { userActions } from "./store/user-slice";
+import { userActions } from "./store/slices/user-slice";
 import Upload from "./pages/Upload";
+import CustomAlert from "./ui/CustomeAlert";
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.user.isAuthenticated);
-  const error = useSelector((state) => state.requestHandle.error);
-  const isLoading = useSelector((state) => state.requestHandle.isLoading);
-
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -31,16 +27,21 @@ const App = () => {
 
   return (
     <Header>
-      {isLoading && <Loading />}
-      {error && <Error />}
+      <CustomAlert />
       <Routes>
-        <Route path="/" element={<PortalDetails />} />
-        <Route path="/signin" element={<SignIn />} />
+        <Route path="/" element={<Statistics />} />
+        <Route
+          path="/signin"
+          element={!isLoggedIn ? <SignIn /> : <Navigate to="/" />}
+        />
         <Route
           path="/upload"
-          element={isLoggedIn ? <Upload /> : <Error message="404" />}
+          element={isLoggedIn ? <Upload /> : <Navigate to="/" />}
         />
-        <Route path="/history" element={isLoggedIn ? <History /> : <Error />} />
+        <Route
+          path="/history"
+          element={isLoggedIn ? <History /> : <Navigate to="/" />}
+        />
       </Routes>
     </Header>
   );

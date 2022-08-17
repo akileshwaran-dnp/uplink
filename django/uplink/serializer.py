@@ -1,4 +1,3 @@
-from dataclasses import field, fields
 from rest_framework.serializers import ModelSerializer
 from . models import *
 
